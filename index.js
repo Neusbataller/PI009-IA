@@ -13,9 +13,10 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
 // Rutas
-app.use(require("./routes/index"));
+const rutas = require("./routes/index");
+app.use("/", rutas);
 
-// Iniciando servidor
+// Iniciar servidor
 app.listen(app.get("port"), () => {
   console.log("Servidor funcionando en el puerto " + app.get("port"));
 });
