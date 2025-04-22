@@ -1,9 +1,9 @@
 const { Router } = require("express");
 const router = Router();
 const OpenAI = require("openai");
-require("dotenv").config();
 
 router.post("/rutaPost_IA", (req, res) => {
+  require("dotenv").config();
   const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
   });
