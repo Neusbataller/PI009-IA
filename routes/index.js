@@ -24,9 +24,9 @@ router.post("/rutaPOST", (req, res) => {
   res.send("Datos recibidos");
 });
 
-//Ruta POST de prueba rápida (fuera de IAChat)
+// Ruta de prueba POST (verifica que está activa desde Postman)
 router.post("/test", (req, res) => {
-  res.json({ message: "La ruta /test funciona 🎉" });
+  res.json({ message: "La ruta /test funciona" });
 });
 
 // Ruta POST con IA
