@@ -1,39 +1,26 @@
 const { Router } = require("express");
 const router = Router();
-const { Configuration, OpenAIApi } = require("openai");
+const OpenAI = require("openai");
 require("dotenv").config();
 
-router.post("/IAChat", async (req, res) => {
-  const pregunta = req.body.pregunta;
-
-  if (!pregunta) {
-    return res
-      .status(400)
-      .json({ content: "Falta la pregunta en la solicitud." });
-  }
-
-  const configuration = new Configuration({
+router.post("/rutaPost_IA", (req, res) => {
+  const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
   });
-  const openai = new OpenAIApi(configuration);
 
-  try {
-    const response = await openai.createChatCompletion({
-      model: "gpt-3.5-turbo",
-      messages: [
-        { role: "system", content: "Eres un asistente virtual" },
-        { role: "user", content: pregunta },
-      ],
-      max_tokens: 100,
-      temperature: 0.7,
-    });
-
-    const result = response.data.choices[0].message.content;
-    res.json({ content: result }); // <- ESTO ES LO QUE UNITY NECESITA
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ content: "Error al procesar la solicitud." });
-  }
+  const completion = openai.chat.completions.create({
+    model: "gpt-4o-mini",
+    store: true,
+    messages: [
+      {
+        role: "developer",
+        content: "Eres un ordenador malote" + req.body.pregunta,
+      },
+    ],
+  });
+  completion.then((result) => {
+    res.send(result.choices[0]);
+  });
 });
 
 module.exports = router;
