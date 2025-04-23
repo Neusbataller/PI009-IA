@@ -1,29 +1,66 @@
 const { Router } = require("express");
 const router = Router();
 const OpenAI = require("openai");
+require("dotenv").config();
 
-router.post("/rutaPost_IA", (req, res) => {
-  require("dotenv").config();
-  const openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY,
-  });
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
 
-  const completion = openai.chat.completions.create({
-    model: "gpt-4o-mini",
-    store: true,
-    messages: [
-      {
-        role: "developer",
-        content: "Eres un ordenador malote" + req.body.pregunta,
-      },
-    ],
-  });
-  completion.then((result) => {
-    res.send(result.choices[0]);
-  });
+router.post("/rutaPost_IA", async (req, res) => {
+  const pregunta = req.body.pregunta;
+
+  try {
+    const completion = await openai.chat.completions.create({
+      model: "gpt-4o",
+      messages: [
+        {
+          role: "system",
+          content: "Eres un ordenador malote",
+        },
+        {
+          role: "user",
+          content: pregunta,
+        },
+      ],
+    });
+
+    const respuesta = completion.choices[0].message.content;
+
+    res.json({ content: respuesta });
+  } catch (error) {
+    console.error("Error en OpenAI:", error.message);
+    res.status(500).json({ content: "Error al procesar la solicitud de IA." });
+  }
 });
 
 module.exports = router;
+
+// const { Router } = require("express");
+// const router = Router();
+// const OpenAI = require("openai");
+// require("dotenv").config();
+
+// const openai = new OpenAI({
+//   apiKey: process.env.OPENAI_API_KEY,
+// });
+// router.post("/rutaPost_IA", (req, res) => {
+//   const completion = openai.chat.completions.create({
+//     model: "gpt-4o-mini",
+//     store: true,
+//     messages: [
+//       {
+//         role: "developer",
+//         content: "Eres un ordenador malote" + req.body.pregunta,
+//       },
+//     ],
+//   });
+//   completion.then((result) => {
+//     res.send(result.choices[0]);
+//   });
+// });
+
+// module.exports = router;
 
 // const { Router } = require("express");
 // const router = Router();
